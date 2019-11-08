@@ -28,8 +28,8 @@
 # POSSIBILITY OF SUCH DAMAGE.
 
 import re
-import urllib
-from urlparse import urlsplit
+import urllib.request, urllib.parse, urllib.error
+from urllib.parse import urlsplit
 
 from django.conf import settings
 from django.contrib.auth import (
@@ -130,7 +130,7 @@ def parse_openid_response(request):
     current_url = request.build_absolute_uri()
 
     consumer = make_consumer(request)
-    return consumer.complete(dict(request.REQUEST.items()), current_url)
+    return consumer.complete(dict(list(request.REQUEST.items())), current_url)
 
 
 def login_begin(request, template_name='openid/login.html',
@@ -164,7 +164,7 @@ def login_begin(request, template_name='openid/login.html',
     consumer = make_consumer(request)
     try:
         openid_request = consumer.begin(openid_url)
-    except DiscoveryFailure, exc:
+    except DiscoveryFailure as exc:
         return render_failure(
             request, "OpenID discovery error: %s" % (str(exc),), status=500)
 
@@ -206,7 +206,7 @@ def login_begin(request, template_name='openid/login.html',
             launchpad_teams[group.name] = group.name
 
     if launchpad_teams:
-        openid_request.addExtension(teams.TeamsRequest(launchpad_teams.keys()))
+        openid_request.addExtension(teams.TeamsRequest(list(launchpad_teams.keys())))
 
     # Construct the request completion URL, including the page we
     # should redirect to.
@@ -216,7 +216,7 @@ def login_begin(request, template_name='openid/login.html',
             return_to += '&'
         else:
             return_to += '?'
-        return_to += urllib.urlencode({redirect_field_name: redirect_to})
+        return_to += urllib.parse.urlencode({redirect_field_name: redirect_to})
 
     return render_openid_request(request, openid_request, return_to)
 

@@ -60,7 +60,7 @@ class UserChangeFormWithTeamRestriction(UserChangeForm):
     def clean_groups(self):
         data = self.cleaned_data['groups']
         teams_mapping = getattr(settings, 'OPENID_LAUNCHPAD_TEAMS_MAPPING', {})
-        known_teams = teams_mapping.values()
+        known_teams = list(teams_mapping.values())
         user_groups = self.instance.groups.all()
         for group in data:
             if group.name in known_teams and group not in user_groups:

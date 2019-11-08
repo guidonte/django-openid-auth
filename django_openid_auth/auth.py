@@ -130,7 +130,7 @@ class OpenIDBackend:
             if ' ' in fullname:
                 first_name, last_name = fullname.rsplit(None, 1)
             else:
-                first_name = u''
+                first_name = ''
                 last_name = fullname
 
         return dict(email=email, nickname=nickname,
@@ -210,7 +210,7 @@ class OpenIDBackend:
             return
 
         current_groups = set(user.groups.filter(
-                name__in=teams_mapping.values()))
+                name__in=list(teams_mapping.values())))
         desired_groups = set(Group.objects.filter(
                 name__in=[teams_mapping[lp_team]
                           for lp_team in teams_response.is_member

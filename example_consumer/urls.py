@@ -30,7 +30,7 @@
 from django.conf.urls.defaults import *
 from django.contrib import admin
 
-import views
+from . import views
 
 
 admin.autodiscover()

@@ -37,7 +37,7 @@ class Nonce(models.Model):
     salt = models.CharField(max_length=40)
 
     def __unicode__(self):
-        return u"Nonce: %s, %s" % (self.server_url, self.salt)
+        return "Nonce: %s, %s" % (self.server_url, self.salt)
 
 
 class Association(models.Model):
@@ -49,7 +49,7 @@ class Association(models.Model):
     assoc_type = models.TextField(max_length=64)
 
     def __unicode__(self):
-        return u"Association: %s, %s" % (self.server_url, self.handle)
+        return "Association: %s, %s" % (self.server_url, self.handle)
 
 
 class UserOpenID(models.Model):

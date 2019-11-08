@@ -52,7 +52,7 @@ class OpenIDBackendTests(TestCase):
         message.setArg(SREG_NS, "fullname", "Some User")
         message.setArg(SREG_NS, "email", "foo@example.com")
         response = SuccessResponse(
-            endpoint, message, signed_fields=message.toPostArgs().keys())
+            endpoint, message, signed_fields=list(message.toPostArgs().keys()))
 
         data = self.backend._extract_user_details(response)
         self.assertEqual(data, {"nickname": "someuser",
@@ -73,7 +73,7 @@ class OpenIDBackendTests(TestCase):
             message.setArg(AX_NS, "type.%s" % alias, uri)
             message.setArg(AX_NS, "value.%s" % alias, value)
         response = SuccessResponse(
-            endpoint, message, signed_fields=message.toPostArgs().keys())
+            endpoint, message, signed_fields=list(message.toPostArgs().keys()))
 
         data = self.backend._extract_user_details(response)
         self.assertEqual(data, {"nickname": "someuser",
@@ -98,7 +98,7 @@ class OpenIDBackendTests(TestCase):
             message.setArg(AX_NS, "type.%s" % alias, uri)
             message.setArg(AX_NS, "value.%s" % alias, value)
         response = SuccessResponse(
-            endpoint, message, signed_fields=message.toPostArgs().keys())
+            endpoint, message, signed_fields=list(message.toPostArgs().keys()))
 
         data = self.backend._extract_user_details(response)
         self.assertEqual(data, {"nickname": "someuser",
@@ -121,7 +121,7 @@ class OpenIDBackendTests(TestCase):
             message.setArg(AX_NS, "type.%s" % alias, uri)
             message.setArg(AX_NS, "value.%s" % alias, value)
         response = SuccessResponse(
-            endpoint, message, signed_fields=message.toPostArgs().keys())
+            endpoint, message, signed_fields=list(message.toPostArgs().keys()))
 
         data = self.backend._extract_user_details(response)
         self.assertEqual(data, {"nickname": "someuser",

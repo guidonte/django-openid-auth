@@ -158,7 +158,7 @@ class RelyingPartyTests(TestCase):
         # here.  For simplicity, force generation of a redirect.
         openid_response.whichEncoding = lambda: ENCODE_URL
         webresponse = self.provider.server.encodeResponse(openid_response)
-        self.assertEquals(webresponse.code, 302)
+        self.assertEqual(webresponse.code, 302)
         redirect_to = webresponse.headers['location']
         self.assertTrue(redirect_to.startswith(
                 'http://testserver/openid/complete/'))
@@ -184,7 +184,7 @@ class RelyingPartyTests(TestCase):
         self.assertContains(response, 'OpenID transaction in progress')
 
         openid_request = self.provider.parseFormPost(response.content)
-        self.assertEquals(openid_request.mode, 'checkid_setup')
+        self.assertEqual(openid_request.mode, 'checkid_setup')
         self.assertTrue(openid_request.return_to.startswith(
                 'http://testserver/openid/complete/'))
 
@@ -195,7 +195,7 @@ class RelyingPartyTests(TestCase):
 
         # And they are now logged in:
         response = self.client.get('/getuser/')
-        self.assertEquals(response.content, 'someuser')
+        self.assertEqual(response.content, 'someuser')
 
     def test_login_no_next(self):
         """Logins with no next parameter redirect to LOGIN_REDIRECT_URL."""
@@ -212,7 +212,7 @@ class RelyingPartyTests(TestCase):
         self.assertContains(response, 'OpenID transaction in progress')
 
         openid_request = self.provider.parseFormPost(response.content)
-        self.assertEquals(openid_request.mode, 'checkid_setup')
+        self.assertEqual(openid_request.mode, 'checkid_setup')
         self.assertTrue(openid_request.return_to.startswith(
                 'http://testserver/openid/complete/'))
 
@@ -234,11 +234,11 @@ class RelyingPartyTests(TestCase):
         # Requesting the login form immediately begins an
         # authentication request.
         response = self.client.get('/openid/login/', {'next': '/getuser/'})
-        self.assertEquals(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'OpenID transaction in progress')
 
         openid_request = self.provider.parseFormPost(response.content)
-        self.assertEquals(openid_request.mode, 'checkid_setup')
+        self.assertEqual(openid_request.mode, 'checkid_setup')
         self.assertTrue(openid_request.return_to.startswith(
                 'http://testserver/openid/complete/'))
 
@@ -249,7 +249,7 @@ class RelyingPartyTests(TestCase):
 
         # And they are now logged in:
         response = self.client.get('/getuser/')
-        self.assertEquals(response.content, 'someuser')
+        self.assertEqual(response.content, 'someuser')
 
     def test_login_create_users(self):
         settings.OPENID_CREATE_USERS = True
@@ -277,13 +277,13 @@ class RelyingPartyTests(TestCase):
         # And they are now logged in as a new user (they haven't taken
         # over the existing "someuser" user).
         response = self.client.get('/getuser/')
-        self.assertEquals(response.content, 'someuser2')
+        self.assertEqual(response.content, 'someuser2')
 
         # Check the details of the new user.
         user = User.objects.get(username='someuser2')
-        self.assertEquals(user.first_name, 'Some')
-        self.assertEquals(user.last_name, 'User')
-        self.assertEquals(user.email, 'foo@example.com')
+        self.assertEqual(user.first_name, 'Some')
+        self.assertEqual(user.last_name, 'User')
+        self.assertEqual(user.email, 'foo@example.com')
 
     def test_login_update_details(self):
         settings.OPENID_UPDATE_DETAILS_FROM_SREG = True
@@ -315,13 +315,13 @@ class RelyingPartyTests(TestCase):
         # And they are now logged in as testuser (the passed in
         # nickname has not caused the username to change).
         response = self.client.get('/getuser/')
-        self.assertEquals(response.content, 'testuser')
+        self.assertEqual(response.content, 'testuser')
 
         # The user's full name and email have been updated.
         user = User.objects.get(username='testuser')
-        self.assertEquals(user.first_name, 'Some')
-        self.assertEquals(user.last_name, 'User')
-        self.assertEquals(user.email, 'foo@example.com')
+        self.assertEqual(user.first_name, 'Some')
+        self.assertEqual(user.last_name, 'User')
+        self.assertEqual(user.email, 'foo@example.com')
 
     def test_login_attribute_exchange(self):
         settings.OPENID_UPDATE_DETAILS_FROM_SREG = True
@@ -348,23 +348,15 @@ class RelyingPartyTests(TestCase):
         self.assertEqual(sreg_request.optional, [])
 
         fetch_request = ax.FetchRequest.fromOpenIDRequest(openid_request)
-        self.assertTrue(fetch_request.has_key(
-                'http://axschema.org/contact/email'))
-        self.assertTrue(fetch_request.has_key(
-                'http://axschema.org/namePerson'))
-        self.assertTrue(fetch_request.has_key(
-                'http://axschema.org/namePerson/first'))
-        self.assertTrue(fetch_request.has_key(
-                'http://axschema.org/namePerson/last'))
-        self.assertTrue(fetch_request.has_key(
-                'http://axschema.org/namePerson/friendly'))
+        self.assertTrue('http://axschema.org/contact/email' in fetch_request)
+        self.assertTrue('http://axschema.org/namePerson' in fetch_request)
+        self.assertTrue('http://axschema.org/namePerson/first' in fetch_request)
+        self.assertTrue('http://axschema.org/namePerson/last' in fetch_request)
+        self.assertTrue('http://axschema.org/namePerson/friendly' in fetch_request)
         # myOpenID compatibilty attributes:
-        self.assertTrue(fetch_request.has_key(
-                'http://schema.openid.net/contact/email'))
-        self.assertTrue(fetch_request.has_key(
-                'http://schema.openid.net/namePerson'))
-        self.assertTrue(fetch_request.has_key(
-                'http://schema.openid.net/namePerson/friendly'))
+        self.assertTrue('http://schema.openid.net/contact/email' in fetch_request)
+        self.assertTrue('http://schema.openid.net/namePerson' in fetch_request)
+        self.assertTrue('http://schema.openid.net/namePerson/friendly' in fetch_request)
 
         # Build up a response including AX data.
         openid_response = openid_request.answer(True)
@@ -384,13 +376,13 @@ class RelyingPartyTests(TestCase):
         # And they are now logged in as testuser (the passed in
         # nickname has not caused the username to change).
         response = self.client.get('/getuser/')
-        self.assertEquals(response.content, 'testuser')
+        self.assertEqual(response.content, 'testuser')
 
         # The user's full name and email have been updated.
         user = User.objects.get(username='testuser')
-        self.assertEquals(user.first_name, 'Firstname')
-        self.assertEquals(user.last_name, 'Lastname')
-        self.assertEquals(user.email, 'foo@example.com')
+        self.assertEqual(user.first_name, 'Firstname')
+        self.assertEqual(user.last_name, 'Lastname')
+        self.assertEqual(user.email, 'foo@example.com')
 
     def test_login_teams(self):
         settings.OPENID_LAUNCHPAD_TEAMS_MAPPING = {'teamname': 'groupname',
@@ -426,7 +418,7 @@ class RelyingPartyTests(TestCase):
 
         # And they are now logged in as testuser
         response = self.client.get('/getuser/')
-        self.assertEquals(response.content, 'testuser')
+        self.assertEqual(response.content, 'testuser')
 
         # The user's groups have been updated.
         user = User.objects.get(username='testuser')

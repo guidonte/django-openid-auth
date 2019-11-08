@@ -49,12 +49,12 @@ class OpenIDStoreTests(TestCase):
 
         dbassoc = Association.objects.get(
             server_url='server-url', handle='handle')
-        self.assertEquals(dbassoc.server_url, 'server-url')
-        self.assertEquals(dbassoc.handle, 'handle')
-        self.assertEquals(dbassoc.secret, 'secret'.encode('base-64'))
-        self.assertEquals(dbassoc.issued, 42)
-        self.assertEquals(dbassoc.lifetime, 600)
-        self.assertEquals(dbassoc.assoc_type, 'HMAC-SHA1')
+        self.assertEqual(dbassoc.server_url, 'server-url')
+        self.assertEqual(dbassoc.handle, 'handle')
+        self.assertEqual(dbassoc.secret, 'secret'.encode('base-64'))
+        self.assertEqual(dbassoc.issued, 42)
+        self.assertEqual(dbassoc.lifetime, 600)
+        self.assertEqual(dbassoc.assoc_type, 'HMAC-SHA1')
 
     def test_storeAssociation_update_existing(self):
         assoc = OIDAssociation('handle', 'secret', 42, 600, 'HMAC-SHA1')
@@ -78,15 +78,15 @@ class OpenIDStoreTests(TestCase):
         assoc = self.store.getAssociation('server-url', 'handle')
         self.assertTrue(isinstance(assoc, OIDAssociation))
 
-        self.assertEquals(assoc.handle, 'handle')
-        self.assertEquals(assoc.secret, 'secret')
-        self.assertEquals(assoc.issued, timestamp)
-        self.assertEquals(assoc.lifetime, 600)
-        self.assertEquals(assoc.assoc_type, 'HMAC-SHA1')
+        self.assertEqual(assoc.handle, 'handle')
+        self.assertEqual(assoc.secret, 'secret')
+        self.assertEqual(assoc.issued, timestamp)
+        self.assertEqual(assoc.lifetime, 600)
+        self.assertEqual(assoc.assoc_type, 'HMAC-SHA1')
 
     def test_getAssociation_unknown(self):
         assoc = self.store.getAssociation('server-url', 'unknown')
-        self.assertEquals(assoc, None)
+        self.assertEqual(assoc, None)
 
     def test_getAssociation_expired(self):
         lifetime = 600
@@ -97,7 +97,7 @@ class OpenIDStoreTests(TestCase):
 
         # The association is not returned, and is removed from the database.
         assoc = self.store.getAssociation('server-url', 'handle')
-        self.assertEquals(assoc, None)
+        self.assertEqual(assoc, None)
         self.assertRaises(Association.DoesNotExist, Association.objects.get,
                           server_url='server-url', handle='handle')
 
@@ -113,22 +113,22 @@ class OpenIDStoreTests(TestCase):
 
         # The newest handle is returned.
         assoc = self.store.getAssociation('server-url', None)
-        self.assertNotEquals(assoc, None)
-        self.assertEquals(assoc.handle, 'handle1')
-        self.assertEquals(assoc.issued, timestamp + 1)
+        self.assertNotEqual(assoc, None)
+        self.assertEqual(assoc.handle, 'handle1')
+        self.assertEqual(assoc.issued, timestamp + 1)
 
     def test_removeAssociation(self):
         timestamp = int(time.time())
         self.store.storeAssociation(
             'server-url', OIDAssociation('handle', 'secret', timestamp, 600,
                                          'HMAC-SHA1'))
-        self.assertEquals(
+        self.assertEqual(
             self.store.removeAssociation('server-url', 'handle'), True)
-        self.assertEquals(
+        self.assertEqual(
             self.store.getAssociation('server-url', 'handle'), None)
 
     def test_removeAssociation_unknown(self):
-        self.assertEquals(
+        self.assertEqual(
             self.store.removeAssociation('server-url', 'unknown'), False)
 
     def test_useNonce(self):
@@ -182,7 +182,7 @@ class OpenIDStoreTests(TestCase):
             'server-url', OIDAssociation('handle2', 'secret', timestamp,
                                          200, 'HMAC-SHA1'))
 
-        self.assertEquals(self.store.cleanupAssociations(), 1)
+        self.assertEqual(self.store.cleanupAssociations(), 1)
 
         # The second (non-expired) association is left behind.
         self.assertNotEqual(self.store.getAssociation('server-url', 'handle2'),
