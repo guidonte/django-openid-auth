@@ -53,6 +53,6 @@ class Association(models.Model):
 
 
 class UserOpenID(models.Model):
-    user = models.ForeignKey(User)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     claimed_id = models.CharField(max_length=255, unique=True)
     display_id = models.TextField(max_length=2047)
