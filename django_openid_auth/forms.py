@@ -49,8 +49,8 @@ def teams_new_unicode(self):
         return "%s -> %s" % (name, ", ".join(group_teams))
     else:
         return name
-Group.unicode_before_teams = Group.__unicode__
-Group.__unicode__ = teams_new_unicode
+Group.unicode_before_teams = Group.__str__
+Group.__str__ = teams_new_unicode
 
 
 class UserChangeFormWithTeamRestriction(UserChangeForm):

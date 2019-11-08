@@ -36,7 +36,7 @@ class Nonce(models.Model):
     timestamp = models.IntegerField()
     salt = models.CharField(max_length=40)
 
-    def __unicode__(self):
+    def __str__(self):
         return "Nonce: %s, %s" % (self.server_url, self.salt)
 
 
@@ -48,7 +48,7 @@ class Association(models.Model):
     lifetime = models.IntegerField()
     assoc_type = models.TextField(max_length=64)
 
-    def __unicode__(self):
+    def __str__(self):
         return "Association: %s, %s" % (self.server_url, self.handle)
 
 
