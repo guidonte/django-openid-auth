@@ -70,6 +70,7 @@ setup(
         'django_openid_auth',
         'django_openid_auth.management',
         'django_openid_auth.management.commands',
+        'django_openid_auth.migrations',
         'django_openid_auth.tests',
         ],
     package_data={
